@@ -7,6 +7,7 @@ data class PostModel(
     val likeCount: Int,
     val commentCount: Int,
     val shareCount: Int,
+    val repostsCount: Int,
     val isLiked: Boolean,
     val timestamp: Long,
     val postText: String
