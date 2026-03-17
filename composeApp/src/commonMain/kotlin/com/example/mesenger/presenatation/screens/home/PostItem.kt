@@ -21,6 +21,8 @@ import com.example.mesenger.uitil.formatPostTime
 import mesenger.composeapp.generated.resources.*
 import org.jetbrains.compose.resources.DrawableResource
 import org.jetbrains.compose.resources.painterResource
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.MoreHoriz
 
 @Composable
 fun PostItem(post: PostModel) {
@@ -61,9 +63,16 @@ fun PostItem(post: PostModel) {
                         SpaH(8)
                         Text(
                             text = formatPostTime(post.timestamp),
-                            style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                            style = MaterialTheme.typography.bodySmall,
                         )
+
                     }
+                    Icon(
+                        imageVector = Icons.Default.MoreHoriz,
+                        contentDescription = "More",
+                        modifier = Modifier.size(20.dp),
+                        tint = Color.Gray
+                    )
 
 
                 }
@@ -73,7 +82,8 @@ fun PostItem(post: PostModel) {
                 Text(
                     text = post.postText,
                     style = MaterialTheme.typography.bodyMedium,
-                    lineHeight = 20.sp
+                    lineHeight = 20.sp,
+                    fontSize = 20.sp
                 )
 
                 if (post.postImage != null) {
@@ -108,7 +118,7 @@ fun PostItem(post: PostModel) {
         }
 
         Spa(12)
-    }
+        HorizontalDivider(thickness = 0.5.dp, color = Color.LightGray.copy(alpha = 0.5f))    }
 }
 
 @Composable
@@ -128,7 +138,7 @@ fun ActionIcon(
             SpaH(6)
             Text(
                 text = count.toString(),
-                style = MaterialTheme.typography.bodySmall.copy(color = Color.Gray)
+                style = MaterialTheme.typography.bodySmall
             )
         }
     }

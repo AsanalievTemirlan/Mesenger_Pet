@@ -49,7 +49,8 @@ kotlin {
             implementation(libs.bundles.coil)
 
             implementation(libs.kotlinx.datetime)
-        }
+
+            implementation(libs.jetbrains.material.icons.extended)        }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
