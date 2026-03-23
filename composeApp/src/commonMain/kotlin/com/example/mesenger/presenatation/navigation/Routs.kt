@@ -6,3 +6,9 @@ import kotlinx.serialization.Serializable
 data object HomeScreenRoute
 @Serializable
 data object ProfileScreenRoute
+@Serializable
+data object RegistrationScreenRoute
+@Serializable
+data object LoginScreenRoute
+@Serializable
+data object ForgotPasswordScreenRoute

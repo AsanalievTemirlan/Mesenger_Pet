@@ -30,6 +30,7 @@ kotlin {
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -50,7 +51,16 @@ kotlin {
 
             implementation(libs.kotlinx.datetime)
 
-            implementation(libs.jetbrains.material.icons.extended)        }
+            implementation(libs.jetbrains.material.icons.extended)
+            
+            // Koin
+            implementation(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+
+            // Logging
+            implementation(libs.napier)
+        }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }

@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.mesenger.presenatation.screens.auth.RegistrationScreen
 import com.example.mesenger.presenatation.screens.home.HomeScreen
 import com.example.mesenger.presenatation.screens.profile.ProfileScreen
 import mesenger.composeapp.generated.resources.Res
@@ -92,7 +93,7 @@ fun AppNavHost() {
 
         NavHost(
             navController = navController,
-            startDestination = HomeScreenRoute,
+            startDestination = RegistrationScreenRoute,
             modifier = Modifier.padding(innerPadding)
         ) {
 
@@ -102,6 +103,10 @@ fun AppNavHost() {
 
             composable<ProfileScreenRoute> {
                 ProfileScreen(navController)
+            }
+
+            composable<RegistrationScreenRoute> {
+                RegistrationScreen(navController)
             }
         }
     }
