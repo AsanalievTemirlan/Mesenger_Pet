@@ -2,6 +2,7 @@ package com.example.mesenger
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
@@ -14,10 +15,10 @@ import kotlinx.serialization.json.Json
 
 @Composable
 @Preview
-fun App() {
+fun App(deepLinkUrl: String? = null) {
     InitCoil()
     MaterialTheme {
-        AppNavHost()
+        AppNavHost(deepLinkUrl)
     }
 }
 

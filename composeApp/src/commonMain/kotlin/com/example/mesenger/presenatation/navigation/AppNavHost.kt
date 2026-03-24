@@ -13,6 +13,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,7 +34,7 @@ import mesenger.composeapp.generated.resources.ic_profile
 import org.jetbrains.compose.resources.painterResource
 
 @Composable
-fun AppNavHost() {
+fun AppNavHost(deepLinkUrl: String? = null) {
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -45,6 +46,30 @@ fun AppNavHost() {
     val icons = listOf(Res.drawable.ic_home, Res.drawable.ic_profile)
 
     var selectedTab by remember { mutableStateOf(0) }
+
+    LaunchedEffect(deepLinkUrl) {
+        deepLinkUrl?.let { url ->
+            val fragment = url.substringAfter("#", "")
+            if (fragment.isNotEmpty()) {
+                val params = fragment.split("&")
+                    .mapNotNull {
+                        val parts = it.split("=")
+                        if (parts.size == 2) parts[0] to parts[1] else null
+                    }
+                    .toMap()
+
+                val accessToken = params["access_token"]
+                val refreshToken = params["refresh_token"]
+
+                if (accessToken != null && refreshToken != null) {
+
+                    navController.navigate(HomeScreenRoute) {
+                        popUpTo(RegistrationScreenRoute) { inclusive = true }
+                    }
+                }
+            }
+        }
+    }
 
     Scaffold(
         bottomBar = {

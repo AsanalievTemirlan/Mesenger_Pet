@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
 data class RegistrationDto(
     val email: String,
     val password: String,
-    val data: Map<String, String>? = null
+    val data: Map<String, String>? = null,
+    val redirectTo: String? = "myapp://auth-callback"
 )
 
 fun RegistrationDto.toDomain(): RegistrationModel {
