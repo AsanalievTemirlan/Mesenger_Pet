@@ -2,6 +2,7 @@ package com.example.mesenger.presenatation.screens.auth
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mesenger.domain.models.RegistrationModel
 import com.example.mesenger.domain.usecase.RegisterUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,12 +18,12 @@ class RegistrationViewModel(
     private val _state = MutableStateFlow<RegistrationState>(RegistrationState.Idle)
     val state = _state.asStateFlow()
 
-    fun register(email: String, password: String) {
+    fun register(model: RegistrationModel) {
         viewModelScope.launch {
-            Napier.d("Начинаем регистрацию для $email", tag = "REG")
+            Napier.d("Начинаем регистрацию для ", tag = "REG")
             _state.value = RegistrationState.Loading
 
-            val result = registerUseCase(email, password)
+            val result = registerUseCase(model)
 
             when (result) {
                 is Result.Success -> {

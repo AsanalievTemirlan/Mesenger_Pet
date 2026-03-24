@@ -2,6 +2,7 @@ package com.example.mesenger.presenatation.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -21,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.mesenger.presenatation.screens.auth.RegistrationScreen
 import com.example.mesenger.presenatation.screens.home.HomeScreen
@@ -32,82 +34,68 @@ import org.jetbrains.compose.resources.painterResource
 
 @Composable
 fun AppNavHost() {
-
     val navController = rememberNavController()
 
-    val tabs = listOf(
-        HomeScreenRoute,
-        ProfileScreenRoute
-    )
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
-    val icons = listOf(
-        Res.drawable.ic_home,
-        Res.drawable.ic_profile
-    )
+    val showBottomBar = currentRoute != RegistrationScreenRoute::class.qualifiedName
+
+    val tabs = listOf(HomeScreenRoute, ProfileScreenRoute)
+    val icons = listOf(Res.drawable.ic_home, Res.drawable.ic_profile)
 
     var selectedTab by remember { mutableStateOf(0) }
 
     Scaffold(
         bottomBar = {
-            Column {
-                HorizontalDivider(
-                    thickness = 0.5.dp,
-                    color = Color.LightGray.copy(alpha = 0.3f)
-                )
-
-                NavigationBar(
-                    containerColor = Color.White,
-                    tonalElevation = 0.dp,
-                    modifier = Modifier.height(60.dp)
-                ) {
-                    tabs.forEachIndexed { index, route ->
-
-                        NavigationBarItem(
-                            selected = selectedTab == index,
-                            onClick = {
-                                selectedTab = index
-
-                                navController.navigate(route) {
-                                    popUpTo(0)
-                                    launchSingleTop = true
-                                }
-                            },
-                            icon = {
-                                Icon(
-                                    painter = painterResource(icons[index]),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(26.dp)
+            if (showBottomBar) {
+                Column {
+                    HorizontalDivider(
+                        thickness = 0.5.dp,
+                        color = Color.LightGray.copy(alpha = 0.3f)
+                    )
+                    NavigationBar(
+                        containerColor = Color.White,
+                        tonalElevation = 0.dp,
+                        modifier = Modifier.height(60.dp)
+                    ) {
+                        tabs.forEachIndexed { index, route ->
+                            NavigationBarItem(
+                                selected = selectedTab == index,
+                                onClick = {
+                                    selectedTab = index
+                                    navController.navigate(route) {
+                                        popUpTo(0)
+                                        launchSingleTop = true
+                                    }
+                                },
+                                icon = {
+                                    Icon(
+                                        painter = painterResource(icons[index]),
+                                        contentDescription = null,
+                                        modifier = Modifier.size(26.dp)
+                                    )
+                                },
+                                colors = NavigationBarItemDefaults.colors(
+                                    indicatorColor = Color.Transparent,
+                                    selectedIconColor = Color.Black,
+                                    unselectedIconColor = Color.LightGray
                                 )
-                            },
-                            colors = NavigationBarItemDefaults.colors(
-                                indicatorColor = Color.Transparent,
-                                selectedIconColor = Color.Black,
-                                unselectedIconColor = Color.LightGray
                             )
-                        )
+                        }
                     }
                 }
             }
         }
     ) { innerPadding ->
-
         NavHost(
             navController = navController,
             startDestination = RegistrationScreenRoute,
-            modifier = Modifier.padding(innerPadding)
+            modifier = Modifier.padding(if (showBottomBar) innerPadding else PaddingValues(0.dp))
         ) {
-
-            composable<HomeScreenRoute> {
-                HomeScreen(navController)
-            }
-
-            composable<ProfileScreenRoute> {
-                ProfileScreen(navController)
-            }
-
-            composable<RegistrationScreenRoute> {
-                RegistrationScreen(navController)
-            }
+            composable<HomeScreenRoute> { HomeScreen(navController) }
+            composable<ProfileScreenRoute> { ProfileScreen(navController) }
+            composable<RegistrationScreenRoute> { RegistrationScreen(navController) }
         }
     }
 }

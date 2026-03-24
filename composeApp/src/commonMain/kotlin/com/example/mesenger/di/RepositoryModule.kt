@@ -1,6 +1,6 @@
 package com.example.mesenger.di
 
-import com.example.mesenger.data.AuthRepositoryImpl
+import com.example.mesenger.data.repository.AuthRepositoryImpl
 import com.example.mesenger.domain.repository.AuthRepository
 import org.koin.dsl.bind
 import org.koin.dsl.module

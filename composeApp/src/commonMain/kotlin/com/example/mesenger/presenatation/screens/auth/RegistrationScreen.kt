@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Password
+import androidx.compose.material.icons.filled.VerifiedUser
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -67,9 +69,29 @@ fun RegistrationScreen(navController: NavController) {
         OutlinedTextField(
             value = phoneNumber,
             onValueChange = { phoneNumber = it },
-            label = { Text("Номер телефона") },
-            placeholder = { Text("+7 (XXX) XXX-XX-XX") },
-            leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null) },
+            label = { Text("Имя") },
+            leadingIcon = { Icon(Icons.Default.VerifiedUser, contentDescription = null) },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            shape = RoundedCornerShape(12.dp),
+            enabled = state !is RegistrationViewModel.RegistrationState.Loading
+        )
+        OutlinedTextField(
+            value = phoneNumber,
+            onValueChange = { phoneNumber = it },
+            label = { Text("Электронная почта") },
+            placeholder = { Text("example@gmail.com") },
+            leadingIcon = { Icon(Icons.Default.Mail, contentDescription = null) },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+            shape = RoundedCornerShape(12.dp),
+            enabled = state !is RegistrationViewModel.RegistrationState.Loading
+        )
+        OutlinedTextField(
+            value = phoneNumber,
+            onValueChange = { phoneNumber = it },
+            label = { Text("Пароль") },
+            leadingIcon = { Icon(Icons.Default.Password, contentDescription = null) },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
             shape = RoundedCornerShape(12.dp),
@@ -89,7 +111,7 @@ fun RegistrationScreen(navController: NavController) {
 
         Button(
             onClick = {
-                vm.register("${phoneNumber}@test.com", "password123")
+
             },
             modifier = Modifier
                 .fillMaxWidth()
