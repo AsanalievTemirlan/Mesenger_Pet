@@ -13,7 +13,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Mail
 import androidx.compose.material.icons.filled.Password
-import androidx.compose.material.icons.filled.VerifiedUser
+import androidx.compose.material.icons.filled.SupervisedUserCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -21,16 +21,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,16 +35,27 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.mesenger.presenatation.components.BaseTextInput
 import com.example.mesenger.presenatation.components.SpaV
 import com.example.mesenger.presenatation.ui.GoogleRed
 import com.example.mesenger.presenatation.ui.PrimaryColor
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun RegistrationScreen(navController: NavController) {
-    var phoneNumber by remember { mutableStateOf("") }
     val vm = koinViewModel<RegistrationViewModel>()
     val state by vm.state.collectAsState()
+
+    LaunchedEffect(Unit) {
+        vm.effect.collectLatest { effect ->
+            when (effect) {
+                is RegistrationEffect.NavigateToHome -> {
+                    // navController.navigate("home")
+                }
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -66,43 +73,37 @@ fun RegistrationScreen(navController: NavController) {
 
         SpaV(32)
 
-        OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
-            label = { Text("Имя") },
-            leadingIcon = { Icon(Icons.Default.VerifiedUser, contentDescription = null) },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            shape = RoundedCornerShape(12.dp),
-            enabled = state !is RegistrationViewModel.RegistrationState.Loading
+        BaseTextInput(
+            value = state.name,
+            onValueChange = { vm.onIntent(RegistrationIntent.NameChanged(it)) },
+            label = "Имя",
+            leadingIcon = { Icon(Icons.Default.SupervisedUserCircle, contentDescription = null) },
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            state = state,
         )
-        OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
-            label = { Text("Электронная почта") },
-            placeholder = { Text("example@gmail.com") },
+        BaseTextInput(
+            value = state.email,
+            onValueChange = { vm.onIntent(RegistrationIntent.EmailChanged(it)) },
+            label = "Электронная почта",
+            placeholder = "example@gmail.com",
             leadingIcon = { Icon(Icons.Default.Mail, contentDescription = null) },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            shape = RoundedCornerShape(12.dp),
-            enabled = state !is RegistrationViewModel.RegistrationState.Loading
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            state = state
         )
-        OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
-            label = { Text("Пароль") },
+        BaseTextInput(
+            value = state.password,
+            onValueChange = { vm.onIntent(RegistrationIntent.PasswordChanged(it)) },
+            label = "Пароль",
             leadingIcon = { Icon(Icons.Default.Password, contentDescription = null) },
-            modifier = Modifier.fillMaxWidth(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            shape = RoundedCornerShape(12.dp),
-            enabled = state !is RegistrationViewModel.RegistrationState.Loading
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            state = state
         )
 
         SpaV(16)
 
-        if (state is RegistrationViewModel.RegistrationState.Error) {
+        state.error?.let { error ->
             Text(
-                text = "Ошибка: ${(state as RegistrationViewModel.RegistrationState.Error).error}",
+                text = "Ошибка: $error",
                 color = Color.Red,
                 fontSize = 14.sp,
                 modifier = Modifier.padding(bottom = 8.dp)
@@ -111,26 +112,23 @@ fun RegistrationScreen(navController: NavController) {
 
         Button(
             onClick = {
-
+                vm.onIntent(RegistrationIntent.RegisterClicked)
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(containerColor = PrimaryColor),
-            enabled = state !is RegistrationViewModel.RegistrationState.Loading
+            enabled = !state.isLoading
         ) {
-            if (state is RegistrationViewModel.RegistrationState.Loading) {
+            if (state.isLoading) {
                 CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
             } else {
                 Text("Продолжить", fontSize = 16.sp, color = Color.White)
             }
         }
 
-        if (state is RegistrationViewModel.RegistrationState.Success) {
-            LaunchedEffect(Unit) {
-                // navController.navigate("home") // Например
-            }
+        if (state.isSuccess) {
             Text("Успешно!", color = Color.Green, modifier = Modifier.padding(top = 8.dp))
         }
 
@@ -159,7 +157,7 @@ fun RegistrationScreen(navController: NavController) {
                 .height(56.dp),
             shape = RoundedCornerShape(12.dp),
             border = ButtonDefaults.outlinedButtonBorder(enabled = true).copy(width = 1.dp),
-            enabled = state !is RegistrationViewModel.RegistrationState.Loading
+            enabled = !state.isLoading
         ) {
             Text(
                 text = "Войти через Google",
